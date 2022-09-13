@@ -2,6 +2,8 @@
 
 #include "glad/gl.h"
 
+#include "imgui.h"
+#include "rlImGui.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -9,7 +11,7 @@
 #include "geo.h"
 
 #define APPNAME     "VPILOT"
-#define CODENAME    "BLOOMING V"
+#define CODENAME    "BLOOMING"
 
 Mesh gen(float width, float length, int resX, int resZ)
 {
@@ -224,6 +226,7 @@ int main()
 
     float p = 2.5f;
 
+    rlImGuiSetup(false);
     while (!WindowShouldClose()) {
         UpdateCamera(&cam);
 
@@ -244,9 +247,18 @@ int main()
         DrawGrid(10, 1.0f);
         EndMode3D();
 
+        rlImGuiBegin();
+
+        if (ImGui::Begin("vpilot::cockpit")) {
+            ImGui::SliderFloat("p-value", &p, 1.25, 2.5, "%.3f", 0);
+            ImGui::End();
+        }
+
+        rlImGuiEnd();
+
         EndDrawing();
     }
-
+    rlImGuiShutdown();
     CloseWindow();
     return 0;
 }
