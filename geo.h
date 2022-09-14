@@ -81,6 +81,16 @@ public:
             if (v.y >= box.min.y && v.y <= box.max.y &&
                 v.z <= box.min.z && v.z >= box.max.z)
                 v.x = box.min.x - 0.1f;
+
+            // heuristically apply dist minimizer on the same y column below the area of collision
+            else if (v.y < box.max.y) {
+                if (v.z <= box.min.z && v.z >= box.max.z)
+                    v.x = box.min.x - 0.1f;
+                else if (v.z > box.min.z)
+                    v.x = (box.min.x - 0.1f) * ((wBox.max.z - v.z) / (wBox.max.z - box.min.z));
+                else if (v.z < box.max.z)
+                    v.x = (box.min.x - 0.1f) * ((v.z - wBox.min.z) / (box.max.z - wBox.min.z));
+            }
         }
         wasColliding = true;
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vboId[0]);
